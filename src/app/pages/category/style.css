@@ -1,0 +1,35 @@
+.text-t {
+  visibility: hidden;
+
+  /* Position the tooltip */
+  position: absolute;
+  font-size: 12px;
+  font-style: italic;
+  color: #096dd9;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 0;
+  width: "auto";
+  animation: color-change 1s infinite;
+}
+
+@keyframes color-change {
+  0% {
+    color: red;
+  }
+  50% {
+    color: blue;
+  }
+  100% {
+    color: red;
+  }
+}
+#tooltip {
+  font-size: 12px;
+  width: auto;
+  height: auto;
+}
+
+#tooltip:hover .text-t {
+  visibility: initial;
+}

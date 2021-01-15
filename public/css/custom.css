@@ -1,0 +1,106 @@
+.pagination-crm {
+  padding: 30px !important;
+  float: right;
+}
+.custom-svg .anticon svg {
+  margin-top: -8px;
+}
+.mg-b5 {
+  margin-bottom: 5px;
+}
+
+.mg-r5 {
+  margin-right: 5px;
+}
+
+.MuiTableCell-root {
+  font-size: 13px !important;
+  padding: 12px !important;
+}
+
+.ant-btn-sm {
+  font-size: 13px !important;
+}
+
+.font-size-h2 {
+  font-size: 1.75rem !important;
+}
+
+.text-inverse-success {
+  color: #fff !important;
+}
+
+.font-size-lg {
+  font-size: 1.08rem;
+}
+
+.icon-2x {
+  font-size: 2rem !important;
+}
+
+.ant-gem {
+  width: auto !important;
+}
+
+.search-row-1 {
+  margin-bottom: 0px !important;
+}
+
+.question {
+  /* position: relative; */
+  -webkit-transition: background-color 350ms ease-out;
+  transition: background-color 350ms ease-out;
+  max-width: 100%;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.question {
+  border: 1px solid transparent;
+  min-height: 54px;
+  padding: 5px;
+}
+
+div {
+  display: block;
+}
+
+#livePreview .question-row {
+  white-space: normal;
+}
+
+.questions {
+  margin: 0 0 16px 0;
+  list-style-type: none;
+}
+
+.survey-page .survey-page-body {
+  line-height: 1.5;
+  padding: 36px 24px 1px 24px;
+}
+
+.survey-page {
+  line-height: normal;
+  line-height: normal;
+  font-size: 16px;
+  /* position: relative; */
+  font-family: Arial, sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+style Attribute {
+  cursor: auto;
+}
+
+.org_head {
+  text-align: center;
+}
+
+.customSelector .ant-pagination-options{
+  display: none !important;
+}

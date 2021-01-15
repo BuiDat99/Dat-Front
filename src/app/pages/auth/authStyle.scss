@@ -1,0 +1,72 @@
+.box-login {
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    font-family: 'Roboto Condensed', sans-serif;
+    #kt_login {
+        align-items: center;
+        justify-content: center;
+    }
+    .kt-login {
+        &.kt-login--v1 {
+            display: flex;
+            align-items: center;
+        }
+    } 
+    .kt-grid--hor-tablet-and-mobile {
+        max-width: 1350px !important;
+        width: 100%;
+        align-items: center;
+        height: auto !important;
+        flex: 0 0 !important;
+    }
+    .kt-grid__item {
+        padding: 0 !important;
+        .box-left, .box-right {
+            flex-direction: row !important;
+            align-items: flex-start !important;
+            height: calc(100% - 160px);
+        }
+        .box-left {
+            flex: 1;
+            background: rgb(141, 211, 236);
+            background: linear-gradient(135deg, rgba(141, 211, 236, 0.9) 0%, rgba(111,192,221,0.98) 22%, rgba(111,192,221,0.96) 33%, rgba(38, 129, 212,0.9) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8dd3ec', endColorstr='#0e527c', GradientType=1 );
+            margin: 0px 0;
+            padding: 60px 60px 20px;
+            color: #fff;
+            box-shadow: 10px 10px 28px -8px rgba(0,87,167,1);
+            margin-top: 80px;
+            margin-bottom: 80px;
+            width: 60%;
+            max-width: 798px;
+            height: calc(100% - 160px);
+            .kt-grid__item {
+                padding: 60px 60px 20px !important;
+            }
+            .bxinfo {
+                .titu {
+                    text-transform: uppercase;
+                    font-size: 35px;
+                    font-weight: 700;
+                    margin-bottom: 50px;
+                    color: #fff;
+                    text-align: left;
+                }
+            }
+        }
+        .box-right {
+            width: 40%;
+            max-width: 552px;
+            height: 100%;
+            .kt-login__body {
+                background: #0057a7;
+                box-shadow: 0 2px 10px #0057a7;
+                padding: 74px 44px 90px;
+               min-height: 673px;
+            }
+            input {
+                background-color: transparent !important;
+            }
+        }
+    }
+}

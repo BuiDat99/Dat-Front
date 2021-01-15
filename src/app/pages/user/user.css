@@ -1,0 +1,60 @@
+.datetype {
+  width: 75%;
+}
+
+#cancelBtn {
+  margin-right: 10px;
+}
+#status1 {
+  border: solid white;
+  border-width: 0.1px;
+  border-radius: 5px;
+}
+#avatar {
+  width: 230px;
+  height: 250px;
+}
+
+#tooltiptext {
+  visibility: hidden;
+}
+
+#lable-info{
+  word-break: break-all;
+}
+
+PieChart {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  animation-name: example;
+  animation-duration: 3s;
+}
+
+@keyframes example {
+  0% {
+    background-color: red;
+    left: 0px;
+    top: 0px;
+  }
+  25% {
+    background-color: yellow;
+    left: 90px;
+    top: 0px;
+  }
+  50% {
+    background-color: blue;
+    left: 90px;
+    top: 90px;
+  }
+  75% {
+    background-color: green;
+    left: 0px;
+    top: 90px;
+  }
+  100% {
+    background-color: red;
+    left: 0px;
+    top: 0px;
+  }
+}
