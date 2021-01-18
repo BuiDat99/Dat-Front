@@ -31,27 +31,7 @@ export default {
           },
         ]
       }, 
-      {
-        title: "Category management",
-        root: true,
-        icon: "flaticon2-layers-1",
-        bullet: "dot",
-        submenu: [
-          {
-            title: "Topics",
-            page: "Category/Topic",
-          },
-          {
-            title: "Papers",
-            page: "Category/Paper",
-          },
-          {
-            title: "Difficulty level",
-            page: "Category/DifficultLevel",
-          },
-        ]
-      }, 
-     
+         
       {
         title: "Role",
         root: true, 

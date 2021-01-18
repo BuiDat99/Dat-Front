@@ -38,7 +38,7 @@ export default function List_User(props) {
     const [dataDelete, setDataDelete] = useState({ visible: false });
     const [dataUpdate, setDataUpdate] = useState({ visible: false });
     const [dataRoleOneSelect, setDataRoleOneSelect] = useState([]);
-    const [selectedOptionRole, setSelectedOptionRole] = useState(null);
+    const [selectedOptionRole, setSelectedOptionRole] = useState([]);
     const [total, setTotal] = useState(0);
     const inputNameBankRef = React.createRef();
     const inputEmailBankRef = React.createRef();
@@ -94,11 +94,10 @@ export default function List_User(props) {
     
      
     const getDataRoleOneSelect = () => {
-        makeRequest("get", `role/getallRole`).then(({ data }) => {
+        makeRequest("get", `role/getOneSelect`).then(({ data }) => {
             
             if (data.signal) {
-                const res = data.data.dataRoleMap;
-                console.log('aaaaaaaaaa',res)
+                const res = data.data;
                 setDataRoleOneSelect(res);
             }
         })
@@ -124,6 +123,18 @@ export default function List_User(props) {
     }
 
     const showModalUpdate = (row) => {
+        makeRequest('get', `user/getById?id=${row.id}`)
+            .then(({ data }) => {
+
+                if (data.signal) {
+                    const res = data.data.List_Role;
+                    console.log('b',res)
+                    setSelectedOptionRole(res);
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
         setLinkImage("");
         setDataUpdate({
             ...row,
@@ -177,7 +188,7 @@ export default function List_User(props) {
                     showSuccessMessageIcon('Deleted successfully!')
                     setDataDelete({
                         visible: false
-                    });
+                    });                   
                     let dataRow = rows.filter(it => {
                         return it.id !== idDel;
                     })
@@ -253,21 +264,8 @@ export default function List_User(props) {
         if (!dataUpdate.status) {
             return showErrorMessage('please enter status type');
         }
-        let dataPost = new FormData();
-        if (changeImage == true) {
-            dataPost.append('file', LinkImage);
-        }
-        else if (changeImage == false) {
-            dataPost.append('file', dataUpdate.avatar);
-        }
-
-        dataPost.append('id', dataUpdate.id);
-        dataPost.append('name', dataUpdate.name);
-        dataPost.append('email', dataUpdate.email);
-        dataPost.append('birthday', dataUpdate.birthday);
-        dataPost.append('status', dataUpdate.status);
-        dataPost.append('List_Role', JSON.stringify(selectedOptionRole));
-        makeRequest('post', `user/update`, dataPost)
+    
+        makeRequest('post', `user/update`, dataUpdate)
             .then(({ data }) => {
                 if (data.signal) {
                     showSuccessMessageIcon('Update Successfully!')
@@ -353,7 +351,8 @@ export default function List_User(props) {
                                     dataDelete={dataDelete} clickModalOk={clickModalOk} clickModalCancel={clickModalCancel}
                                     dataUpdate={dataUpdate} clickModalUpdateCancel={clickModalUpdateCancel} onChangeUpdateValue={onChangeUpdateValue} submitUpdate={submitUpdate} handleSubmitUpdate={handleSubmitUpdate} formUpdate={formUpdate}
                                     ACTIVE_STATUS={ACTIVE_STATUS} LinkImage={LinkImage} srcImage={srcImage} onChangeLink={onChangeLink} SelectForm={SelectForm}
-                                    dataRoleOneSelect ={dataRoleOneSelect} setSelectedOptionRole={setSelectedOptionRole}
+                                    dataRoleOneSelect ={dataRoleOneSelect} setSelectedOptionRole={setSelectedOptionRole} selectedOptionRole={selectedOptionRole}
+                                    makeRequest={makeRequest} index={index}
                                 />
                             </Paper>
                             {total > rowsPerPage && (
@@ -363,10 +362,6 @@ export default function List_User(props) {
                                 </div>
                             )}
                         </div>
-
-                        {/* // Cần edit */}
-
-
                     </div>
                 </div>
             </div>

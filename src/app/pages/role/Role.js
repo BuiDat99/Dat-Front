@@ -16,8 +16,6 @@ import { Form} from "react-bootstrap";
 import { Pagination } from "antd";
 import { showSuccessMessageIcon, showErrorMessage } from '../../actions/notification';
 import "./style.css";
-
-
 const useStyles1 = makeStyles(theme => ({
     root: {
         width: "100%",
@@ -48,7 +46,7 @@ export default function RoleList() {
     const [isLoad, setLoad] = useState(false);
     const [dataPerOneSelect, setDataPerOneSelect] = useState([]);
     const [selectedOptionPer, setSelectedOptionPer] = useState(null);
-    const [selectedOptionPerUpdate, setSelectedOptionPerUpdate] = useState(null);
+    const [selectedOptionPerUpdate, setSelectedOptionPerUpdate] = useState([]);
     useEffect(() => {
         searchLevel({ page: 1, limit: rowsPerPage });
         getDataPerOneSelect();
@@ -79,11 +77,12 @@ export default function RoleList() {
             type: 'action',
         }
     ]  
+    
     const getDataPerOneSelect = () => {
         makeRequest("get", `permission/getAllPermission`).then(({ data }) => {
             if (data.signal) {
                 const res = data.data;
-                setDataPerOneSelect(res);
+                setDataPerOneSelect(res);               
             }
         })
             .catch(err => {
@@ -122,7 +121,19 @@ export default function RoleList() {
                 console.log(err)
             })
     }
+
     const showModalUpdate = (row) => {
+        makeRequest('get', `role/getRolebyId?role_id=${row.id}`)
+            .then(({ data }) => {
+
+                if (data.signal) {
+                    const res = data.data.rows.List_Per;
+                    setSelectedOptionPerUpdate(res)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
         setDataUpdate({
             ...row,
             visible: true
@@ -228,27 +239,24 @@ export default function RoleList() {
             inputNameRef.current.focus();
             return showErrorMessage('please enter role name');
         }
+        dataAdd.List_Per = selectedOptionPer;
+
         if (!dataAdd.List_Per) {
             inputPerRef.current.focus();
             return showErrorMessage('please enter permission of role');
-        }
-        dataAdd.List_Per = JSON.stringify(selectedOptionPer);
-        
-        
-        //enableLoadSubmit();
+        }       
         makeRequest('post', `role/createRole`, dataAdd)
             .then(({ data }) => {
                 if (data.signal) {
                     showSuccessMessageIcon('Add Successfully!')
                     setPage(1);
                     searchLevel({ page: 1, limit: rowsPerPage });
+                    setSelectedOptionPer(null);
                     setDataAdd({
-                        visible: false
+                        visible: false,
                     })
                 } else {
-                    showErrorMessage('This name has already been used!!!');
-
-
+                    return showErrorMessage(data.message);
                 }
                 disableLoadSubmit();
             })
@@ -258,7 +266,7 @@ export default function RoleList() {
     }
     const handleSubmitUpdate = (e) => {
         e.preventDefault();
-        dataUpdate.List_Per = JSON.stringify(selectedOptionPerUpdate);       
+        dataUpdate.List_Per = selectedOptionPerUpdate;       
         makeRequest('post', `role/updateRole`, dataUpdate)
             .then(({ data }) => {
                 if (data.signal) {
@@ -329,8 +337,9 @@ export default function RoleList() {
                                     dataDelete={dataDelete } clickModalOk={clickModalOk } clickModalCancel={ clickModalCancel}
                                     dataAdd={dataAdd} clickModalAddCancel={clickModalAddCancel} onChangeAddValue={onChangeAddValue} submitAdd={submitAdd} handleSubmitAdd={handleSubmitAdd} formAdd={formAdd}
                                     dataUpdate={dataUpdate} clickModalUpdateCancel={clickModalUpdateCancel} onChangeUpdateValue={onChangeUpdateValue} submitUpdate={submitUpdate} handleSubmitUpdate={handleSubmitUpdate} formUpdate={formUpdate}
-                                    dataPerOneSelect={dataPerOneSelect} setSelectedOptionPer={setSelectedOptionPer} setSelectedOptionPerUpdate={setSelectedOptionPerUpdate}
-                                    inputNameRef={inputNameRef} inputPerRef={inputPerRef}
+                                    dataPerOneSelect={dataPerOneSelect} setSelectedOptionPer={setSelectedOptionPer} setSelectedOptionPerUpdate={setSelectedOptionPerUpdate} selectedOptionPerUpdate={selectedOptionPerUpdate}
+                                    inputNameRef={inputNameRef} inputPerRef={inputPerRef} makeRequest={makeRequest}
+                                    selectedOptionPer={selectedOptionPer} index={index}
                                     
                                 />
                             </Paper>

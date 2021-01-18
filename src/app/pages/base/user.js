@@ -21,7 +21,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import {
   makeStyles
 } from "@material-ui/core/styles";
-import "./style.css";
 function ListUser(props) {
   const useStyles1 = makeStyles(theme => ({
     root: {
@@ -37,17 +36,31 @@ function ListUser(props) {
     dataDelete, clickModalOk, clickModalCancel,
     dataUpdate, clickModalUpdateCancel, onChangeUpdateValue, submitUpdate, handleSubmitUpdate, formUpdate,
     LinkImage, srcImage, onChangeLink, ACTIVE_STATUS, SelectForm,
-    dataRoleOneSelect, setSelectedOptionRole
+    dataRoleOneSelect, setSelectedOptionRole, selectedOptionRole,
+    makeRequest,index
 
   } = props;
   const animatedComponents = makeAnimated();
-  const [dataDetail, setDataDetail] = useState({ visible: false });
+  const [dataDetail, setDataDetail] = useState({ visible: false, arrayRole: '' });
   const showModalDetail = (row) => {
-    setDataDetail({
-      ...row,
-      visible: true
-    })
+  makeRequest('get', `user/getById?id=${row.id}`)
+      .then(({ data }) => {
+
+        if (data.signal) {
+          const res = data.data.List_Role;
+          row.role = res.map(x => { if (x.label === res[0].label) return res[0].label; else { return (' ' + x.label) } })
+        }
+        setDataDetail({
+          ...row,
+          visible: true
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
   }
+
   const clickModalDetailCancel = () => {
     setDataDetail({
       ...dataDetail,
@@ -74,13 +87,13 @@ function ListUser(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows ? rows.map((row, index) => (
-
+          {rows ? rows.map((row, indexMap) => (
+            indexMap = index + indexMap + 1,
             <TableRow>
               {LabelListUser ? LabelListUser.map((labelType, key) => (
                 <TableCell>
                   {
-                    labelType.type === 'index' ? (index = index + 1) : (
+                    labelType.type === 'index' ? (indexMap) : (
                       labelType.type === 'text' ? (row[labelType.key]) : (
                         labelType.type === 'date' ? moment(row[labelType.key]).format("HH:mm DD-MM-YYYY") : (
                           labelType.type === 'status' ? renderStatusText(row[labelType.key]) : (
@@ -182,9 +195,11 @@ function ListUser(props) {
                         <Select
                           closeMenuOnSelect={false}
                           components={animatedComponents}
-                          isMulti
+                          isMulti={true}
+                          maxMenuHeight={190}
                           options={dataRoleOneSelect}
                           onChange={setSelectedOptionRole}
+                          value={selectedOptionRole}
                         />
                       </Form.Group>
                     </Form.Row>
@@ -229,14 +244,14 @@ function ListUser(props) {
                       <Form.Group as={Col} controlId="formBasicNameBank">
                         <Form.Label className="starDanger">Name</Form.Label>
                         <Form.Control type="text" autoFocus maxLength={255} autoFocus
-                          placeholder="Enter name of user" value={dataDetail.name || ''} />
+                          placeholder="Name of user" value={dataDetail.name || ''} />
                       </Form.Group>
                     </Form.Row>
                     <Form.Row>
                       <Form.Group as={Col} controlId="formBasicNameBank">
                         <Form.Label className="starDanger">Email</Form.Label>
                         <Form.Control type="text" maxLength={255}
-                          placeholder="Enter email of user" value={dataDetail.email || ''} />
+                          placeholder="Email of user" value={dataDetail.email || ''} />
                       </Form.Group>
                     </Form.Row>
 
@@ -265,7 +280,14 @@ function ListUser(props) {
                       <Form.Group as={Col} controlId="formBasicNameBank">
                         <Form.Label className="starDanger">Status</Form.Label>
                         <Form.Control type="text" maxLength={255}
-                          placeholder="Enter email of user" value={dataDetail.status == '1' ? 'Active' : 'De-Active'} />
+                          placeholder="Status of user" value={dataDetail.status == '1' ? 'Active' : 'De-Active'} />
+                      </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                      <Form.Group as={Col} controlId="formBasicNameBank">
+                        <Form.Label className="starDanger">Role</Form.Label>
+                        <Form.Control type="text" maxLength={255}
+                          placeholder="Role of user" value={dataDetail.role} />
                       </Form.Group>
                     </Form.Row>
                     <Button variant="primary" type="submit" ref={formUpdate} visible={false} style={{ width: 0, height: 0, paddingTop: 0, paddingBottom: 0, paddingRight: 0, paddingLeft: 0 }} ref={formUpdate}>
@@ -285,7 +307,7 @@ function AddUser(props) {
   const {
     ButtonLoading, SelectForm, ACTIVE_STATUS, makeRequest,
     showSuccessMessageIcon, showErrorMessage,
-    inputNameRef,inputEmailRef
+    inputNameRef, inputEmailRef, inputRoleRef
   } = props;
   const [dataRoleOneSelect, setDataRoleOneSelect] = useState([]);
   const [selectedOptionRole, setSelectedOptionRole] = useState(null);
@@ -305,9 +327,9 @@ function AddUser(props) {
   if (isFirstLoad) return <Redirect to="/" />
   const animatedComponents = makeAnimated();
   const getDataRoleOneSelect = () => {
-    makeRequest("get", `role/getallRole`).then(({ data }) => {
+    makeRequest("get", `role/getOneSelect`).then(({ data }) => {
       if (data.signal) {
-        const res = data.data.dataRoleMap;
+        const res = data.data;
         setDataRoleOneSelect(res);
       }
     })
@@ -345,9 +367,8 @@ function AddUser(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dataAdd.List_Role = selectedOptionRole;
+
     if (!dataAdd.name) {
-      console.log('name');
       inputNameRef.current.focus();
       return showErrorMessage('Please enter name! ');
     }
@@ -357,7 +378,12 @@ function AddUser(props) {
     }
     if (!dataAdd.status) {
       document.getElementById("status1").style.borderColor = "#ff3333";
-      return showErrorMessage('Please set status!')
+      return showErrorMessage('Please set status!');
+    }
+    dataAdd.List_Role = selectedOptionRole;
+    if (!dataAdd.List_Role) {
+      inputRoleRef.current.focus();
+      return showErrorMessage('Please set role!');
     }
     enableLoadSubmit();
     let dataPost = new FormData();
@@ -443,13 +469,14 @@ function AddUser(props) {
             </Form.Row>
             <Form.Row>
               <Form.Group as={Col} md={6}>
-                <Form.Label className="starDanger">Status</Form.Label>
+                <Form.Label className="starDanger">Role</Form.Label>
                 <Select
                   closeMenuOnSelect={false}
                   components={animatedComponents}
                   isMulti
                   options={dataRoleOneSelect}
                   onChange={setSelectedOptionRole}
+                  ref={inputRoleRef}
                 />
               </Form.Group>
             </Form.Row>
